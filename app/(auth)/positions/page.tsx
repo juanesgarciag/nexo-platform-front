@@ -39,13 +39,21 @@ export default function PositionsPage() {
   const [confianza, setConfianza] = useState("");
   const [hasPnl, setHasPnl] = useState<"" | "yes" | "no">("");
   const [modo, setModo] = useState<"" | "live_binary" | "hedge">("");
+  const [search, setSearch] = useState("");
+  const [searchDebounced, setSearchDebounced] = useState("");
   const [page, setPage] = useState(0);
   const [selectedPositionId, setSelectedPositionId] = useState<number | null>(null);
   const limit = 50;
 
+  // Debounce search 250ms para no spamear el back en cada tecla
+  useEffect(() => {
+    const t = setTimeout(() => setSearchDebounced(search.trim()), 250);
+    return () => clearTimeout(t);
+  }, [search]);
+
   useEffect(() => {
     setPage(0);
-  }, [tab, categoria, confianza, hasPnl, modo]);
+  }, [tab, categoria, confianza, hasPnl, modo, searchDebounced]);
 
   const params = useMemo(() => {
     const p = new URLSearchParams();
@@ -53,6 +61,7 @@ export default function PositionsPage() {
     if (categoria) p.set("categoria", categoria);
     if (confianza) p.set("confianza", confianza);
     if (hasPnl) p.set("has_pnl", hasPnl);
+    if (searchDebounced) p.set("pregunta", searchDebounced);
     if (modo === "live_binary") {
       p.set("portfolio_mode", "live_binary");
     } else if (modo === "hedge") {
@@ -61,7 +70,7 @@ export default function PositionsPage() {
     p.set("limit", String(limit));
     p.set("offset", String(page * limit));
     return p.toString();
-  }, [tab, categoria, confianza, hasPnl, modo, page]);
+  }, [tab, categoria, confianza, hasPnl, modo, searchDebounced, page]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["positions", params],
@@ -94,6 +103,7 @@ export default function PositionsPage() {
     setConfianza("");
     setHasPnl("");
     setModo("");
+    setSearch("");
   }
 
   return (
@@ -124,6 +134,28 @@ export default function PositionsPage() {
             {TAB_LABELS[t]}
           </button>
         ))}
+      </div>
+
+      <div className="relative">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar por pregunta… (ej: Barcelona, Bitcoin, Will Real Madrid)"
+          className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 pl-10 outline-none focus:border-neutral-600 text-sm"
+        />
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 text-sm pointer-events-none">
+          🔎
+        </span>
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 text-xs px-2 py-1 rounded"
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-neutral-900 border border-neutral-800 rounded-xl p-4">
