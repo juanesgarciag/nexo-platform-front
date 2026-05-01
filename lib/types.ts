@@ -44,6 +44,9 @@ export type Position = {
   hedge_reason?: string | null;
   hedge_count?: number | null;
   portfolio_mode?: string | null;
+  event_category?: string | null;
+  event_slug?: string | null;
+  football_sibling_team?: string | null;
   precio_pico?: number | string | null;
 };
 

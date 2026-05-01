@@ -185,9 +185,12 @@ export default function PositionsTable({
                   {p.hedge_opened && (
                     <span
                       className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300"
-                      title={`hedge${p.hedge_reason ? ` (${p.hedge_reason})` : ""}${p.hedge_count ? ` x${p.hedge_count}` : ""}`}
+                      title={`hedge${p.hedge_reason ? ` (${p.hedge_reason})` : ""}${p.hedge_count ? ` x${p.hedge_count}` : ""}${p.football_sibling_team ? ` ↔ ${p.football_sibling_team}` : ""}`}
                     >
-                      🔀 hedge
+                      {p.hedge_reason === "football_sibling" ? "⚽" : "🔀"}{" "}
+                      {p.football_sibling_team
+                        ? `vs ${p.football_sibling_team.slice(0, 14)}`
+                        : "hedge"}
                     </span>
                   )}
                   {p.portfolio_mode === "live_binary" && (
@@ -196,6 +199,14 @@ export default function PositionsTable({
                       title="live binary portfolio mode"
                     >
                       📊 live binary
+                    </span>
+                  )}
+                  {p.event_category && p.event_category !== "otro" && (
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-violet-900/40 text-violet-300"
+                      title={`detectado por estructura: ${p.event_category}`}
+                    >
+                      {p.event_category}
                     </span>
                   )}
                   {p.flip && (

@@ -90,14 +90,15 @@ export default function PositionDetailModal({
   if (!enabled) return null;
 
   const p = data;
+  // Prioridad: event_slug (campo dedicado del bot) > raw_json.slug > condition_id
   const rawSlug =
     p?.raw_json && typeof p.raw_json === "object"
       ? (p.raw_json as Record<string, unknown>)["slug"]
       : undefined;
-  const polymarketHref =
-    typeof rawSlug === "string" && rawSlug
-      ? `https://polymarket.com/event/${rawSlug}`
-      : `https://polymarket.com/event/${data?.condition_id ?? ""}`;
+  const eventSlug = p?.event_slug || (typeof rawSlug === "string" ? rawSlug : "");
+  const polymarketHref = eventSlug
+    ? `https://polymarket.com/event/${eventSlug}`
+    : `https://polymarket.com/event/${data?.condition_id ?? ""}`;
 
   const isOpen = p?.status === "open";
   const displayPrice = isOpen && live?.curPrice != null
@@ -423,7 +424,18 @@ export default function PositionDetailModal({
                         Motivo hedge
                       </div>
                       <div className="text-sm font-medium mt-0.5 text-neutral-200">
+                        {p.hedge_reason === "football_sibling" ? "⚽ " : ""}
                         {p.hedge_reason}
+                      </div>
+                    </div>
+                  )}
+                  {p.football_sibling_team && (
+                    <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
+                      <div className="text-[10px] uppercase tracking-wide text-neutral-500">
+                        Rival cubierto
+                      </div>
+                      <div className="text-sm font-medium mt-0.5 text-neutral-200">
+                        {p.football_sibling_team}
                       </div>
                     </div>
                   )}
