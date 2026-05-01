@@ -52,29 +52,29 @@ export default function PositionsTable({
 
   if (!positions.length) {
     return (
-      <div className="text-sm text-neutral-500 py-8 text-center">
+      <div className="glass-panel text-sm text-neutral-500 py-10 text-center">
         No positions.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-800">
+    <div className="glass-panel overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 rounded-none sm:rounded-xl">
       <table className="w-full text-sm">
-        <thead className="bg-neutral-900 text-neutral-400">
+        <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium border-b border-white/5">
           <tr>
-            <th className="text-left px-3 py-2">Pregunta</th>
-            <th className="text-left px-3 py-2">Outcome</th>
-            <th className="text-right px-3 py-2">Entrada</th>
-            <th className="text-right px-3 py-2">Actual</th>
-            <th className="text-right px-3 py-2">Invertido</th>
-            <th className="text-right px-3 py-2">PnL$</th>
-            <th className="text-right px-3 py-2">PnL%</th>
-            <th className="text-right px-3 py-2">Abierta</th>
-            <th className="text-right px-3 py-2">Cierre</th>
-            <th className="text-left px-3 py-2">Score</th>
-            <th className="text-left px-3 py-2">Origen</th>
-            {showClose && <th className="px-3 py-2"></th>}
+            <th className="text-left px-3 py-3">Pregunta</th>
+            <th className="text-left px-3 py-3">Outcome</th>
+            <th className="text-right px-3 py-3">Entrada</th>
+            <th className="text-right px-3 py-3">Actual</th>
+            <th className="text-right px-3 py-3">Invertido</th>
+            <th className="text-right px-3 py-3">PnL$</th>
+            <th className="text-right px-3 py-3">PnL%</th>
+            <th className="text-right px-3 py-3">Abierta</th>
+            <th className="text-right px-3 py-3">Cierre</th>
+            <th className="text-left px-3 py-3">Score</th>
+            <th className="text-left px-3 py-3">Origen</th>
+            {showClose && <th className="px-3 py-3"></th>}
           </tr>
         </thead>
         <tbody>
@@ -92,16 +92,16 @@ export default function PositionsTable({
             <tr
               key={p.id}
               onClick={() => onSelect?.(p.id)}
-              className="border-t border-neutral-800 hover:bg-neutral-900/50 cursor-pointer"
+              className="border-t border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors"
             >
-              <td className="px-3 py-2 max-w-md truncate" title={p.pregunta}>
+              <td className="px-3 py-2.5 max-w-md truncate" title={p.pregunta}>
                 {p.pregunta}
               </td>
-              <td className="px-3 py-2">{p.outcome}</td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5">{p.outcome}</td>
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {formatNum(p.precio_entrada, 3)}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {curPrice > 0 ? formatNum(curPrice, 3) : "—"}
                 {(() => {
                   const pico = Number(p.precio_pico ?? 0);
@@ -116,11 +116,11 @@ export default function PositionsTable({
                   ) : null;
                 })()}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {formatUsd(p.cantidad)}
               </td>
               <td
-                className={`px-3 py-2 text-right font-mono ${
+                className={`px-3 py-2.5 text-right tabular-nums ${
                   livePnlUsd === null
                     ? ""
                     : livePnlUsd >= 0
@@ -131,7 +131,7 @@ export default function PositionsTable({
                 {livePnlUsd !== null ? formatUsd(livePnlUsd) : "—"}
               </td>
               <td
-                className={`px-3 py-2 text-right ${
+                className={`px-3 py-2.5 text-right tabular-nums ${
                   livePnlPct === null
                     ? ""
                     : livePnlPct >= 0
@@ -141,13 +141,13 @@ export default function PositionsTable({
               >
                 {livePnlPct !== null ? formatPct(livePnlPct) : "—"}
               </td>
-              <td className="px-3 py-2 text-right text-neutral-400 whitespace-nowrap text-xs">
+              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums">
                 {formatAge(p.ts_entrada)}
               </td>
-              <td className="px-3 py-2 text-right text-neutral-400 whitespace-nowrap text-xs">
+              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums">
                 {endDate ? endDate.toString().slice(0, 10) : "—"}
               </td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2.5">
                 {p.score != null ? (
                   (() => {
                     const meta = getScoreMeta(p.score);
@@ -156,7 +156,7 @@ export default function PositionsTable({
                         className="flex flex-col leading-tight"
                         title={p.score_label ?? meta.label}
                       >
-                        <span className={`font-mono text-sm ${meta.color}`}>
+                        <span className={`font-mono text-sm tabular-nums ${meta.color}`}>
                           {meta.emoji} {p.score}
                         </span>
                         {p.whale_name && (
@@ -171,20 +171,20 @@ export default function PositionsTable({
                   <span className="text-neutral-600">—</span>
                 )}
               </td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2.5">
                 <span className="inline-flex items-center gap-1 flex-wrap">
                   {p.origen === "copy" ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-900/40 text-blue-300">copy</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">copy</span>
                   ) : p.origen === "piramide" ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-900/40 text-purple-300">piramide</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent-muted text-accent border border-accent/20">piramide</span>
                   ) : p.origen ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300">{p.origen}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-neutral-300 border border-white/10">{p.origen}</span>
                   ) : (
                     <span className="text-neutral-600">—</span>
                   )}
                   {p.hedge_opened && (
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300"
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
                       title={`hedge${p.hedge_reason ? ` (${p.hedge_reason})` : ""}${p.hedge_count ? ` x${p.hedge_count}` : ""}${p.football_sibling_team ? ` ↔ ${p.football_sibling_team}` : ""}`}
                     >
                       {p.hedge_reason === "football_sibling" ? "⚽" : "🔀"}{" "}
@@ -195,7 +195,7 @@ export default function PositionsTable({
                   )}
                   {p.portfolio_mode === "live_binary" && (
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-900/40 text-cyan-300"
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
                       title="live binary portfolio mode"
                     >
                       📊 live binary
@@ -203,7 +203,7 @@ export default function PositionsTable({
                   )}
                   {p.event_category && p.event_category !== "otro" && (
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-violet-900/40 text-violet-300"
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-accent-muted text-accent border border-accent/20"
                       title={`detectado por estructura: ${p.event_category}`}
                     >
                       {p.event_category}
@@ -211,7 +211,7 @@ export default function PositionsTable({
                   )}
                   {p.flip && (
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/40 text-amber-300"
+                      className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20"
                       title="Flip YES→NO"
                     >
                       🔄 reverse
@@ -221,7 +221,7 @@ export default function PositionsTable({
                 </span>
               </td>
               {showClose && (
-                <td className="px-3 py-2 text-right">
+                <td className="px-3 py-2.5 text-right">
                   {p.status === "open" && (
                     <button
                       disabled={closingId === String(p.id)}
@@ -236,7 +236,7 @@ export default function PositionsTable({
                           razon,
                         });
                       }}
-                      className="text-xs px-2 py-1 rounded bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50"
+                      className="text-xs h-7 px-2.5 rounded-md border border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10 disabled:opacity-50 transition-colors"
                     >
                       Cerrar
                     </button>

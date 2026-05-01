@@ -80,7 +80,7 @@ export default function ParamsEditor() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-4"
+      className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 sm:p-6 space-y-4"
     >
       <div className="text-sm font-medium">Bot params</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

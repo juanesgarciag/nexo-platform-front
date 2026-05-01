@@ -108,7 +108,7 @@ export default function PositionsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Positions</h1>
         <div className="flex items-center gap-2">
           <button
@@ -120,12 +120,12 @@ export default function PositionsPage() {
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto scrollbar-thin -mx-4 px-4 sm:mx-0 sm:px-0">
         {(["open", "pending_redeem", "closed", "hedged", "all"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-3 py-1.5 text-sm rounded-md border ${
+            className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-sm rounded-md border ${
               tab === t
                 ? "bg-neutral-800 border-neutral-700"
                 : "border-neutral-800 text-neutral-400 hover:text-white"
@@ -261,7 +261,7 @@ function HedgedPairsView({
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-3 gap-3 text-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
         <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
           <div className="text-xs text-neutral-400">Pares hedge</div>
           <div className="text-2xl font-mono">{data.total}</div>

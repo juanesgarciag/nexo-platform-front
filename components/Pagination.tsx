@@ -27,12 +27,13 @@ export default function Pagination({
   }
 
   const btn =
-    "min-w-[2.25rem] h-9 px-2 text-sm rounded bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 disabled:cursor-not-allowed";
-  const activeBtn = "min-w-[2.25rem] h-9 px-2 text-sm rounded bg-emerald-600 text-white";
+    "h-8 w-8 inline-flex items-center justify-center text-sm rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors tabular-nums";
+  const activeBtn =
+    "h-8 w-8 inline-flex items-center justify-center text-sm rounded-md bg-accent/15 text-white border border-accent/40 tabular-nums";
 
   return (
     <div className="flex items-center justify-between gap-2 flex-wrap">
-      <div className="text-xs text-neutral-500">
+      <div className="text-xs text-neutral-500 tabular-nums">
         {total !== null
           ? `${total.toLocaleString()} total · página ${current}${
               totalPages ? ` de ${totalPages}` : ""

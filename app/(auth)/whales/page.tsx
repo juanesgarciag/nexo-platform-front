@@ -116,7 +116,7 @@ export default function WhalesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-center justify-between flex-wrap gap-3 sm:gap-4">
         <h1 className="text-2xl font-semibold">Whales &amp; Scoring</h1>
         <div className="flex items-center gap-2 text-xs">
           <span className="text-neutral-500">Status:</span>

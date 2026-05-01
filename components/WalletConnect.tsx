@@ -44,24 +44,24 @@ export default function WalletConnect() {
       : null;
 
   return (
-    <div className="flex items-center gap-4">
-      <ConnectButton showBalance={false} chainStatus="icon" />
+    <div className="flex items-center gap-2 sm:gap-4 min-w-0">
       {isConnected && (
-        <div className="text-xs text-neutral-400 flex gap-3">
+        <div className="hidden md:flex text-xs text-neutral-400 gap-3 tabular-nums">
           <span>
             USDC:{" "}
-            <span className="text-neutral-200">
+            <span className="text-neutral-100 font-medium">
               {usdc !== null ? usdc.toFixed(2) : "—"}
             </span>
           </span>
           <span>
             MATIC:{" "}
-            <span className="text-neutral-200">
+            <span className="text-neutral-100 font-medium">
               {matic ? Number(matic.formatted).toFixed(4) : "—"}
             </span>
           </span>
         </div>
       )}
+      <ConnectButton showBalance={false} chainStatus="icon" />
     </div>
   );
 }

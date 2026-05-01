@@ -44,7 +44,7 @@ export default function DepositForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-3"
+      className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 sm:p-6 space-y-3"
     >
       <div className="text-sm font-medium">New manual deposit</div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -20,12 +20,20 @@ export default function StatCard({
       ? "text-red-400"
       : "text-neutral-100";
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4">
-      <div className="text-xs uppercase tracking-wide text-neutral-500">
+    <div className="glass-panel p-5">
+      <div className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
         {label}
       </div>
-      <div className={`mt-2 text-2xl font-semibold ${toneClass}`}>{value}</div>
-      {hint && <div className="text-xs text-neutral-500 mt-1">{hint}</div>}
+      <div
+        className={`mt-2 text-2xl font-medium tracking-tight tabular-nums ${toneClass}`}
+      >
+        {value}
+      </div>
+      {hint && (
+        <div className="text-xs text-neutral-500 mt-1.5 tabular-nums">
+          {hint}
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
 import { setToken } from "@/lib/auth";
 
+const ACCENT = "#7c5cff";
+
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -31,40 +33,51 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-sm space-y-4 bg-neutral-900 border border-neutral-800 rounded-xl p-6"
+        className="glass-panel w-full max-w-[400px] space-y-5 p-7"
       >
-        <h1 className="text-2xl font-semibold">NexoPlatform</h1>
-        <p className="text-sm text-neutral-400">Sign in to continue</p>
+        <div className="flex items-center gap-2">
+          <span
+            className="h-2 w-2 rounded-full shrink-0"
+            style={{
+              backgroundColor: ACCENT,
+              boxShadow: `0 0 12px ${ACCENT}`,
+            }}
+          />
+          <h1 className="text-xl font-semibold tracking-tight text-white">
+            NexoPlatform
+          </h1>
+        </div>
+        <p className="text-sm text-neutral-400 -mt-2">Sign in to continue</p>
 
-        <div className="space-y-2">
-          <label className="block text-xs uppercase tracking-wide text-neutral-400">
+        <div className="space-y-1.5">
+          <label className="block text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
             Username
           </label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-md px-3 py-2 outline-none focus:border-neutral-600"
+            className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm outline-none transition-colors focus:border-accent/60 focus:ring-1 focus:ring-accent/40"
             autoFocus
             required
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-xs uppercase tracking-wide text-neutral-400">
+        <div className="space-y-1.5">
+          <label className="block text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
             Password
           </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-neutral-950 border border-neutral-800 rounded-md px-3 py-2 outline-none focus:border-neutral-600"
+            className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm outline-none transition-colors focus:border-accent/60 focus:ring-1 focus:ring-accent/40"
             required
           />
         </div>
 
         {error && (
-          <div className="text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-md px-3 py-2">
+          <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-md px-3 py-2">
             {error}
           </div>
         )}
@@ -72,7 +85,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-white text-black font-medium rounded-md px-3 py-2 disabled:opacity-50"
+          className="w-full h-10 bg-accent hover:bg-accent-hover text-white font-medium tracking-tight rounded-md text-sm disabled:opacity-50 transition-colors shadow-glow"
         >
           {loading ? "Signing in…" : "Sign in"}
         </button>

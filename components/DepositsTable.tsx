@@ -18,49 +18,49 @@ export default function DepositsTable({ deposits }: { deposits: Deposit[] }) {
 
   if (!deposits.length) {
     return (
-      <div className="text-sm text-neutral-500 py-8 text-center">
+      <div className="glass-panel text-sm text-neutral-500 py-10 text-center">
         No deposits.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-800">
+    <div className="glass-panel overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 rounded-none sm:rounded-xl">
       <table className="w-full text-sm">
-        <thead className="bg-neutral-900 text-neutral-400">
+        <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium border-b border-white/5">
           <tr>
-            <th className="text-left px-3 py-2">Fecha</th>
-            <th className="text-left px-3 py-2">Source</th>
-            <th className="text-left px-3 py-2">Tipo</th>
-            <th className="text-right px-3 py-2">Cantidad</th>
-            <th className="text-left px-3 py-2">Nota</th>
-            <th className="text-left px-3 py-2">Tx</th>
-            <th className="px-3 py-2"></th>
+            <th className="text-left px-3 py-3">Fecha</th>
+            <th className="text-left px-3 py-3">Source</th>
+            <th className="text-left px-3 py-3">Tipo</th>
+            <th className="text-right px-3 py-3">Cantidad</th>
+            <th className="text-left px-3 py-3">Nota</th>
+            <th className="text-left px-3 py-3">Tx</th>
+            <th className="px-3 py-3"></th>
           </tr>
         </thead>
         <tbody>
           {deposits.map((d) => (
             <tr
               key={d.id}
-              className="border-t border-neutral-800 hover:bg-neutral-900/50"
+              className="border-t border-white/5 hover:bg-white/[0.02] transition-colors"
             >
-              <td className="px-3 py-2 whitespace-nowrap">
+              <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">
                 {formatDate(d.fecha)}
               </td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2.5">
                 <span
-                  className={`text-xs px-2 py-0.5 rounded ${
+                  className={`text-[10px] px-1.5 py-0.5 rounded border ${
                     d.source === "auto"
-                      ? "bg-blue-950 text-blue-300 border border-blue-900"
-                      : "bg-neutral-800 text-neutral-300 border border-neutral-700"
+                      ? "bg-blue-500/10 text-blue-300 border-blue-500/20"
+                      : "bg-white/5 text-neutral-300 border-white/10"
                   }`}
                 >
                   {d.source}
                 </span>
               </td>
-              <td className="px-3 py-2">{d.tipo}</td>
+              <td className="px-3 py-2.5">{d.tipo}</td>
               <td
-                className={`px-3 py-2 text-right ${
+                className={`px-3 py-2.5 text-right tabular-nums ${
                   d.tipo === "deposito"
                     ? "text-emerald-400"
                     : "text-red-400"
@@ -69,14 +69,14 @@ export default function DepositsTable({ deposits }: { deposits: Deposit[] }) {
                 {d.tipo === "deposito" ? "+" : "-"}
                 {formatUsd(d.cantidad_usdc)}
               </td>
-              <td className="px-3 py-2">{d.nota ?? "—"}</td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2.5 text-neutral-400">{d.nota ?? "—"}</td>
+              <td className="px-3 py-2.5">
                 {d.tx_hash ? (
                   <a
                     href={`https://polygonscan.com/tx/${d.tx_hash}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-blue-400 hover:underline text-xs"
+                    className="text-accent hover:text-accent-hover hover:underline text-xs tabular-nums"
                   >
                     {d.tx_hash.slice(0, 8)}…
                   </a>
@@ -84,13 +84,13 @@ export default function DepositsTable({ deposits }: { deposits: Deposit[] }) {
                   "—"
                 )}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5 text-right">
                 {d.source === "manual" && (
                   <button
                     onClick={() => {
                       if (confirm("Delete this deposit?")) del.mutate(d.id);
                     }}
-                    className="text-xs px-2 py-1 rounded bg-neutral-800 hover:bg-red-900"
+                    className="text-xs h-7 px-2.5 rounded-md border border-white/10 bg-white/5 hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-300 transition-colors"
                   >
                     Delete
                   </button>

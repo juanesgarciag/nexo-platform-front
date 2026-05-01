@@ -141,7 +141,7 @@ export default function PositionDetailModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-neutral-950 border border-neutral-800 p-6"
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-neutral-950 border border-neutral-800 p-4 sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -194,7 +194,7 @@ export default function PositionDetailModal({
                     valueClass={showGreen ? "text-emerald-400" : ""}
                   />
                 ) : (
-                  <Stat label="Precio pico" value="\u2014" />
+                  <Stat label="Precio pico" value="—" />
                 );
               })()}
               <Stat label="Invertido" value={formatUsd(p.cantidad)} />
