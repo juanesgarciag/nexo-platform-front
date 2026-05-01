@@ -109,6 +109,8 @@ export type Trade = {
   razon: string | null;
   confianza: string | null;
   categoria: string | null;
+  source_wallet?: string | null;
+  raw_json?: Record<string, unknown> | null;
 };
 
 export type Deposit = {

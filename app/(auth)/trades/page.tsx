@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiFetchWithMeta } from "@/lib/api";
 import { Trade } from "@/lib/types";
 import TradesTable from "@/components/TradesTable";
+import TradeDetailModal from "@/components/TradeDetailModal";
 import Pagination from "@/components/Pagination";
 
 export default function TradesPage() {
@@ -17,6 +18,7 @@ export default function TradesPage() {
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
   const [page, setPage] = useState(0);
+  const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const limit = 50;
 
   // Debounce search 250ms
@@ -97,7 +99,7 @@ export default function TradesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Trades</h1>
         <div className="flex items-center gap-2">
           <button
@@ -203,7 +205,7 @@ export default function TradesPage() {
       {isLoading ? (
         <div className="text-sm text-neutral-500">Loading…</div>
       ) : (
-        <TradesTable trades={data?.data ?? []} />
+        <TradesTable trades={data?.data ?? []} onSelect={setSelectedTrade} />
       )}
 
       <Pagination
@@ -211,6 +213,11 @@ export default function TradesPage() {
         pageSize={limit}
         total={data?.total ?? null}
         onChange={setPage}
+      />
+
+      <TradeDetailModal
+        trade={selectedTrade}
+        onClose={() => setSelectedTrade(null)}
       />
     </div>
   );

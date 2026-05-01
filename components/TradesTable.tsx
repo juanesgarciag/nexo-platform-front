@@ -3,30 +3,36 @@
 import { Trade } from "@/lib/types";
 import { formatDate, formatNum, formatPct, formatUsd } from "@/lib/format";
 
-export default function TradesTable({ trades }: { trades: Trade[] }) {
+export default function TradesTable({
+  trades,
+  onSelect,
+}: {
+  trades: Trade[];
+  onSelect?: (trade: Trade) => void;
+}) {
   if (!trades.length) {
     return (
-      <div className="text-sm text-neutral-500 py-8 text-center">
+      <div className="glass-panel text-sm text-neutral-500 py-10 text-center">
         No trades.
       </div>
     );
   }
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-800">
+    <div className="glass-panel overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 rounded-none sm:rounded-xl">
       <table className="w-full text-sm">
-        <thead className="bg-neutral-900 text-neutral-400">
+        <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium border-b border-white/5">
           <tr>
-            <th className="text-left px-3 py-2">Fecha</th>
-            <th className="text-left px-3 py-2">Tipo</th>
-            <th className="text-left px-3 py-2">Outcome</th>
-            <th className="text-right px-3 py-2">Precio</th>
-            <th className="text-right px-3 py-2">Invertido</th>
-            <th className="text-right px-3 py-2">Cobrado</th>
-            <th className="text-right px-3 py-2">PnL$</th>
-            <th className="text-right px-3 py-2">PnL%</th>
-            <th className="text-left px-3 py-2">Categoría</th>
-            <th className="text-left px-3 py-2">Confianza</th>
-            <th className="text-left px-3 py-2">Razón</th>
+            <th className="text-left px-3 py-3">Fecha</th>
+            <th className="text-left px-3 py-3">Tipo</th>
+            <th className="text-left px-3 py-3">Outcome</th>
+            <th className="text-right px-3 py-3">Precio</th>
+            <th className="text-right px-3 py-3">Invertido</th>
+            <th className="text-right px-3 py-3">Cobrado</th>
+            <th className="text-right px-3 py-3">PnL$</th>
+            <th className="text-right px-3 py-3">PnL%</th>
+            <th className="text-left px-3 py-3">Categoría</th>
+            <th className="text-left px-3 py-3">Confianza</th>
+            <th className="text-left px-3 py-3">Razón</th>
           </tr>
         </thead>
         <tbody>
@@ -45,39 +51,42 @@ export default function TradesTable({ trades }: { trades: Trade[] }) {
             return (
             <tr
               key={t.id}
-              className="border-t border-neutral-800 hover:bg-neutral-900/50"
+              onClick={() => onSelect?.(t)}
+              className={`border-t border-white/5 hover:bg-white/[0.02] transition-colors ${
+                onSelect ? "cursor-pointer" : ""
+              }`}
             >
-              <td className="px-3 py-2 whitespace-nowrap">
+              <td className="px-3 py-2.5 whitespace-nowrap tabular-nums">
                 {formatDate(t.ts)}
               </td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2.5">
                 <span
                   className={
-                    "text-xs px-2 py-0.5 rounded " +
+                    "text-[10px] px-1.5 py-0.5 rounded border " +
                     (t.tipo === "entrada"
-                      ? "bg-blue-900/40 text-blue-300"
+                      ? "bg-blue-500/10 text-blue-300 border-blue-500/20"
                       : t.tipo === "resolucion"
-                      ? "bg-purple-900/40 text-purple-300"
+                      ? "bg-accent-muted text-accent border-accent/20"
                       : t.tipo === "monitor"
-                      ? "bg-amber-900/40 text-amber-300"
-                      : "bg-neutral-800 text-neutral-300")
+                      ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
+                      : "bg-white/5 text-neutral-300 border-white/10")
                   }
                 >
                   {t.tipo}
                 </span>
               </td>
-              <td className="px-3 py-2">{t.outcome ?? "—"}</td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5">{t.outcome ?? "—"}</td>
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {formatNum(t.precio, 3)}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {formatUsd(t.cantidad)}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3 py-2.5 text-right tabular-nums">
                 {cobrado === null ? "—" : formatUsd(cobrado)}
               </td>
               <td
-                className={`px-3 py-2 text-right ${
+                className={`px-3 py-2.5 text-right tabular-nums ${
                   pnlUsd === null
                     ? ""
                     : pnlUsd >= 0
@@ -88,16 +97,16 @@ export default function TradesTable({ trades }: { trades: Trade[] }) {
                 {pnlUsd === null ? "—" : formatUsd(pnlUsd)}
               </td>
               <td
-                className={`px-3 py-2 text-right ${
+                className={`px-3 py-2.5 text-right tabular-nums ${
                   pct === null ? "" : pct >= 0 ? "text-emerald-400" : "text-red-400"
                 }`}
               >
                 {pct === null ? "—" : formatPct(pct)}
               </td>
-              <td className="px-3 py-2">{t.categoria ?? "—"}</td>
-              <td className="px-3 py-2">{t.confianza ?? "—"}</td>
+              <td className="px-3 py-2.5">{t.categoria ?? "—"}</td>
+              <td className="px-3 py-2.5">{t.confianza ?? "—"}</td>
               <td
-                className="px-3 py-2 max-w-xs truncate"
+                className="px-3 py-2.5 max-w-xs truncate text-neutral-400"
                 title={t.razon ?? ""}
               >
                 {t.razon ?? "—"}
