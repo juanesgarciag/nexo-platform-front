@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch, apiFetchWithMeta } from "@/lib/api";
-import { Position } from "@/lib/types";
+import { Position, HedgedPositions } from "@/lib/types";
 import PositionsTable from "@/components/PositionsTable";
 import PositionDetailModal from "@/components/PositionDetailModal";
 import Pagination from "@/components/Pagination";
+import { formatNum, formatUsd } from "@/lib/format";
 
 export type LivePriceMap = Record<
   string,
@@ -22,12 +23,13 @@ export type LivePriceMap = Record<
   }
 >;
 
-type Tab = "open" | "pending_redeem" | "closed" | "all";
+type Tab = "open" | "pending_redeem" | "closed" | "hedged" | "all";
 
 const TAB_LABELS: Record<Tab, string> = {
   open: "Open",
   pending_redeem: "Sin redimir",
   closed: "Closed",
+  hedged: "Hedged",
   all: "All",
 };
 
@@ -78,6 +80,15 @@ export default function PositionsPage() {
     enabled: tab === "open" || tab === "all",
   });
 
+  const hedgedQ = useQuery({
+    queryKey: ["positions-hedged"],
+    queryFn: () => apiFetch<HedgedPositions>("/api/positions/hedged"),
+    refetchInterval: 10000,
+    refetchOnMount: "always",
+    staleTime: 0,
+    enabled: tab === "hedged",
+  });
+
   function clearFilters() {
     setCategoria("");
     setConfianza("");
@@ -100,7 +111,7 @@ export default function PositionsPage() {
       </div>
 
       <div className="flex gap-2">
-        {(["open", "pending_redeem", "closed", "all"] as Tab[]).map((t) => (
+        {(["open", "pending_redeem", "closed", "hedged", "all"] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -160,23 +171,204 @@ export default function PositionsPage() {
         </label>
       </div>
 
-      {isLoading ? (
-        <div className="text-sm text-neutral-500">Loading…</div>
+      {tab === "hedged" ? (
+        hedgedQ.isLoading ? (
+          <div className="text-sm text-neutral-500">Loading…</div>
+        ) : (
+          <HedgedPairsView data={hedgedQ.data} onSelect={setSelectedPositionId} />
+        )
       ) : (
-        <PositionsTable positions={data?.data ?? []} onSelect={setSelectedPositionId} livePrices={liveQ.data ?? {}} />
-      )}
+        <>
+          {isLoading ? (
+            <div className="text-sm text-neutral-500">Loading…</div>
+          ) : (
+            <PositionsTable positions={data?.data ?? []} onSelect={setSelectedPositionId} livePrices={liveQ.data ?? {}} />
+          )}
 
-      <Pagination
-        page={page}
-        pageSize={limit}
-        total={data?.total ?? null}
-        onChange={setPage}
-      />
+          <Pagination
+            page={page}
+            pageSize={limit}
+            total={data?.total ?? null}
+            onChange={setPage}
+          />
+        </>
+      )}
 
       <PositionDetailModal
         positionId={selectedPositionId}
         onClose={() => setSelectedPositionId(null)}
       />
     </div>
+  );
+}
+
+
+function HedgedPairsView({
+  data,
+  onSelect,
+}: {
+  data?: HedgedPositions;
+  onSelect: (id: number) => void;
+}) {
+  if (!data || data.total === 0) {
+    return (
+      <div className="text-sm text-neutral-500 py-8 text-center border border-neutral-800 rounded-xl">
+        No hedge pairs detected.
+      </div>
+    );
+  }
+
+  const totalCombinedPnl = data.pairs.reduce(
+    (s, p) => s + Number(p.combined_pnl_usdc ?? 0),
+    0
+  );
+  const totalCombinedInv = data.pairs.reduce(
+    (s, p) => s + Number(p.combined_invertido ?? 0),
+    0
+  );
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-3 gap-3 text-sm">
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
+          <div className="text-xs text-neutral-400">Pares hedge</div>
+          <div className="text-2xl font-mono">{data.total}</div>
+        </div>
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
+          <div className="text-xs text-neutral-400">Capital invertido</div>
+          <div className="text-2xl font-mono">{formatUsd(totalCombinedInv)}</div>
+        </div>
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
+          <div className="text-xs text-neutral-400">P&L combinado</div>
+          <div
+            className={`text-2xl font-mono ${
+              totalCombinedPnl >= 0 ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
+            {formatUsd(totalCombinedPnl)}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {data.pairs.map((pair) => {
+          const pnl = Number(pair.combined_pnl_usdc ?? 0);
+          const inv = Number(pair.combined_invertido ?? 0);
+          const isImplicit = pair.hedge_key.startsWith("implicit:");
+          return (
+            <div
+              key={pair.hedge_key}
+              className="bg-neutral-900 border border-neutral-800 rounded-xl p-4"
+            >
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">
+                    {pair.primary.pregunta || "—"}
+                  </div>
+                  <div className="text-[11px] text-neutral-500 mt-0.5 flex items-center gap-2">
+                    <span
+                      className={`px-1.5 py-0.5 rounded ${
+                        isImplicit
+                          ? "bg-amber-900/40 text-amber-300"
+                          : "bg-emerald-900/40 text-emerald-300"
+                      }`}
+                    >
+                      {isImplicit ? "implícito" : "explícito"}
+                    </span>
+                    <span className="text-neutral-600">
+                      {pair.primary.condition_id.slice(0, 14)}…
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-xs text-neutral-400">
+                    inv {formatUsd(inv)}
+                  </div>
+                  <div
+                    className={`font-mono text-lg ${
+                      pnl >= 0 ? "text-emerald-400" : "text-red-400"
+                    }`}
+                  >
+                    {formatUsd(pnl)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <SidePanel
+                  label="Primary"
+                  pos={pair.primary}
+                  onSelect={() => onSelect(pair.primary.id)}
+                />
+                {pair.hedge ? (
+                  <SidePanel
+                    label="Hedge"
+                    pos={pair.hedge}
+                    onSelect={() => pair.hedge && onSelect(pair.hedge.id)}
+                  />
+                ) : (
+                  <div className="border border-dashed border-neutral-800 rounded p-3 text-xs text-neutral-600 flex items-center justify-center">
+                    sin par detectado
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SidePanel({
+  label,
+  pos,
+  onSelect,
+}: {
+  label: string;
+  pos: Position;
+  onSelect: () => void;
+}) {
+  const pnl = Number(pos.pnl_usdc ?? 0);
+  return (
+    <button
+      onClick={onSelect}
+      className="text-left border border-neutral-800 rounded p-3 hover:bg-neutral-800/40 transition"
+    >
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <span className="text-[10px] uppercase tracking-wide text-neutral-500">
+          {label}
+        </span>
+        <span className="text-xs px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-300">
+          {pos.outcome}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div>
+          <div className="text-neutral-500">Entrada</div>
+          <div className="font-mono">{formatNum(pos.precio_entrada, 3)}</div>
+        </div>
+        <div>
+          <div className="text-neutral-500">Actual</div>
+          <div className="font-mono">
+            {pos.precio_actual !== null ? formatNum(pos.precio_actual, 3) : "—"}
+          </div>
+        </div>
+        <div>
+          <div className="text-neutral-500">Invertido</div>
+          <div className="font-mono">{formatUsd(pos.cantidad)}</div>
+        </div>
+        <div>
+          <div className="text-neutral-500">PnL</div>
+          <div
+            className={`font-mono ${
+              pnl >= 0 ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
+            {formatUsd(pnl)}
+          </div>
+        </div>
+      </div>
+    </button>
   );
 }
