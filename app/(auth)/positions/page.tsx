@@ -38,7 +38,7 @@ export default function PositionsPage() {
   const [hasPnl, setHasPnl] = useState<"" | "yes" | "no">("");
   const [modo, setModo] = useState<"" | "live_binary" | "hedge">("");
   const [page, setPage] = useState(0);
-  const [selectedCid, setSelectedCid] = useState<string | null>(null);
+  const [selectedPositionId, setSelectedPositionId] = useState<number | null>(null);
   const limit = 50;
 
   useEffect(() => {
@@ -163,7 +163,7 @@ export default function PositionsPage() {
       {isLoading ? (
         <div className="text-sm text-neutral-500">Loading…</div>
       ) : (
-        <PositionsTable positions={data?.data ?? []} onSelect={setSelectedCid} livePrices={liveQ.data ?? {}} />
+        <PositionsTable positions={data?.data ?? []} onSelect={setSelectedPositionId} livePrices={liveQ.data ?? {}} />
       )}
 
       <Pagination
@@ -174,8 +174,8 @@ export default function PositionsPage() {
       />
 
       <PositionDetailModal
-        conditionId={selectedCid}
-        onClose={() => setSelectedCid(null)}
+        positionId={selectedPositionId}
+        onClose={() => setSelectedPositionId(null)}
       />
     </div>
   );

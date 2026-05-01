@@ -1,9 +1,10 @@
-export type PositionStatus = "open" | "closed" | "redeemed" | "lost";
+export type PositionStatus = "open" | "closed" | "pending_redeem" | "redeemed" | "lost";
 
 export type Position = {
   id: number;
   condition_id: string;
   token_id: string;
+  source_wallet: string | null;
   outcome: string;
   pregunta: string;
   categoria: string | null;

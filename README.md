@@ -1,6 +1,6 @@
 # nexo-platform-front
 
-Local-first dashboard for the NexoBot Polymarket platform. Talks to `nexo-platform-back` (FastAPI) over JWT, and integrates MetaMask in **read-only** mode via RainbowKit to display USDC + MATIC balances on Polygon.
+Local-first dashboard for the NexoBot Polymarket platform. Talks to `nexo-platform-back` (FastAPI) with an HttpOnly session cookie, and integrates MetaMask in **read-only** mode via RainbowKit to display USDC + MATIC balances on Polygon.
 
 ## Stack
 
@@ -30,7 +30,7 @@ Then open http://localhost:3000.
 
 ## Auth
 
-Login uses the credentials configured on the back via `ADMIN_USERNAME` / `ADMIN_PASSWORD`. The JWT is stored in `localStorage` under `nexo_token`.
+Login uses the credentials configured on the back via `ADMIN_USERNAME` / `ADMIN_PASSWORD`. The backend stores the JWT in an HttpOnly cookie; the frontend only keeps a non-sensitive tab marker in `sessionStorage`.
 
 ## Requirements
 

@@ -4,18 +4,24 @@ import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavSidebar from "@/components/NavSidebar";
 import WalletConnect from "@/components/WalletConnect";
-import { isAuthenticated } from "@/lib/auth";
+import { apiFetch } from "@/lib/api";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace("/login");
-    } else {
-      setReady(true);
-    }
+    let cancelled = false;
+    apiFetch("/auth/me")
+      .then(() => {
+        if (!cancelled) setReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) router.replace("/login");
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   if (!ready) return null;

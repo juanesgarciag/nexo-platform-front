@@ -14,18 +14,18 @@ import {
 import { getScoreMeta, truncateAddr } from "@/lib/whales";
 
 export default function PositionDetailModal({
-  conditionId,
+  positionId,
   onClose,
 }: {
-  conditionId: string | null;
+  positionId: number | null;
   onClose: () => void;
 }) {
-  const enabled = !!conditionId;
+  const enabled = positionId !== null;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["position-detail", conditionId],
+    queryKey: ["position-detail", positionId],
     queryFn: () =>
-      apiFetch<PositionDetail>(`/api/positions/${conditionId}`),
+      apiFetch<PositionDetail>(`/api/positions/by-id/${positionId}`),
     enabled,
   });
 
@@ -44,7 +44,7 @@ export default function PositionDetailModal({
     refetchInterval: 10000,
     enabled: enabled && data?.status === "open",
   });
-  const live = conditionId ? liveQ.data?.[conditionId] : undefined;
+  const live = data?.condition_id ? liveQ.data?.[data.condition_id] : undefined;
 
   // Hedge: detectar si esta posición forma parte de un par hedge
   const hasHedge = !!(data?.hedge_opened || data?.hedge_for);
@@ -97,7 +97,7 @@ export default function PositionDetailModal({
   const polymarketHref =
     typeof rawSlug === "string" && rawSlug
       ? `https://polymarket.com/event/${rawSlug}`
-      : `https://polymarket.com/event/${conditionId}`;
+      : `https://polymarket.com/event/${data?.condition_id ?? ""}`;
 
   const isOpen = p?.status === "open";
   const displayPrice = isOpen && live?.curPrice != null

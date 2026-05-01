@@ -56,7 +56,7 @@ export default function ParamsEditor() {
     mutationFn: async (payload: Partial<BotParams>) =>
       apiFetch("/api/control/params", {
         method: "PATCH",
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ params: payload }),
       }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["control-params"] });

@@ -26,7 +26,7 @@ export default function PositionsTable({
 }: {
   positions: Position[];
   showClose?: boolean;
-  onSelect?: (cid: string) => void;
+  onSelect?: (positionId: number) => void;
   livePrices?: LivePriceMap;
 }) {
   const qc = useQueryClient();
@@ -34,13 +34,13 @@ export default function PositionsTable({
 
   const closeMut = useMutation({
     mutationFn: async ({
-      condition_id,
+      position_id,
       razon,
     }: {
-      condition_id: string;
+      position_id: number;
       razon: string;
     }) =>
-      apiFetch(`/api/control/positions/${condition_id}/close`, {
+      apiFetch(`/api/control/positions/by-id/${position_id}/close`, {
         method: "POST",
         body: JSON.stringify({ razon }),
       }),
@@ -91,7 +91,7 @@ export default function PositionsTable({
             return (
             <tr
               key={p.id}
-              onClick={() => onSelect?.(p.condition_id)}
+              onClick={() => onSelect?.(p.id)}
               className="border-t border-neutral-800 hover:bg-neutral-900/50 cursor-pointer"
             >
               <td className="px-3 py-2 max-w-md truncate" title={p.pregunta}>
@@ -213,15 +213,15 @@ export default function PositionsTable({
                 <td className="px-3 py-2 text-right">
                   {p.status === "open" && (
                     <button
-                      disabled={closingId === p.condition_id}
+                      disabled={closingId === String(p.id)}
                       onClick={(e) => {
                         e.stopPropagation();
                         const razon =
                           window.prompt("Razón del cierre manual:") || "";
                         if (!razon) return;
-                        setClosingId(p.condition_id);
+                        setClosingId(String(p.id));
                         closeMut.mutate({
-                          condition_id: p.condition_id,
+                          position_id: p.id,
                           razon,
                         });
                       }}
