@@ -43,11 +43,35 @@ export default function BotStatusBadge() {
   if (isError || !data) {
     return (
       <div
-        className="hidden sm:flex items-center gap-2 h-9 px-3 rounded-md border border-amber-500/30 bg-amber-500/5 text-xs text-amber-300"
-        title="No se pudo contactar al bot"
+        className="flex items-center gap-1 h-9 pl-3 pr-1 rounded-md border border-amber-500/30 bg-amber-500/5 text-xs"
+        title="Estado desconocido. Los botones igual intentan pausar/reanudar el bot."
       >
         <span className="h-2 w-2 rounded-full bg-amber-400" />
-        Bot offline
+        <span className="hidden sm:inline text-amber-300 font-medium">
+          Bot ?
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            if (window.confirm("¿Pausar el bot?")) pauseMut.mutate();
+          }}
+          disabled={pending}
+          className="ml-1 h-7 w-7 rounded flex items-center justify-center text-neutral-300 hover:text-white hover:bg-white/10 disabled:opacity-40 transition-colors"
+          aria-label="Pausar bot"
+        >
+          <Pause className="h-3.5 w-3.5" strokeWidth={2.25} />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (window.confirm("¿Reanudar el bot?")) resumeMut.mutate();
+          }}
+          disabled={pending}
+          className="h-7 w-7 rounded flex items-center justify-center text-neutral-300 hover:text-white hover:bg-white/10 disabled:opacity-40 transition-colors"
+          aria-label="Reanudar bot"
+        >
+          <Play className="h-3.5 w-3.5" strokeWidth={2.25} />
+        </button>
       </div>
     );
   }
