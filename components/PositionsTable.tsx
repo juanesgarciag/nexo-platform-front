@@ -6,6 +6,7 @@ import { getScoreMeta } from "@/lib/whales";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api";
 import { useState } from "react";
+import EventTypeBadge from "@/components/EventTypeBadge";
 
 type LivePriceMap = Record<
   string,
@@ -72,6 +73,7 @@ export default function PositionsTable({
             <th className="text-right px-3 py-3 border-b border-white/5">PnL%</th>
             <th className="text-right px-3 py-3 border-b border-white/5">Abierta</th>
             <th className="text-right px-3 py-3 border-b border-white/5">Cierre</th>
+            <th className="text-left px-3 py-3 border-b border-white/5">Tipo</th>
             <th className="text-left px-3 py-3 border-b border-white/5">Score</th>
             <th className="text-left px-3 py-3 border-b border-white/5">Origen</th>
             {showClose && <th className="px-3 py-3 border-b border-white/5"></th>}
@@ -149,6 +151,9 @@ export default function PositionsTable({
               </td>
               <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums border-t border-white/5">
                 {endDate ? endDate.toString().slice(0, 10) : "—"}
+              </td>
+              <td className="px-3 py-2.5 border-t border-white/5">
+                <EventTypeBadge eventType={p.event_type} eventSport={p.event_sport} />
               </td>
               <td className="px-3 py-2.5 border-t border-white/5">
                 {p.score != null ? (

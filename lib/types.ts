@@ -50,6 +50,8 @@ export type Position = {
   whale_hedge_nivel?: string | null;
   whale_hedge_ratio?: number | string | null;
   entry_pair_result?: number | string | null;
+  event_type?: string | null;       // "deportes" | "crypto" | "politica" | etc.
+  event_sport?: string | null;      // "futbol" | "tenis" | "NBA" | etc.
   precio_pico?: number | string | null;
 };
 
@@ -114,6 +116,9 @@ export type Trade = {
   categoria: string | null;
   source_wallet?: string | null;
   raw_json?: Record<string, unknown> | null;
+  pregunta?: string | null;
+  event_type?: string | null;
+  event_sport?: string | null;
 };
 
 export type Deposit = {

@@ -2,6 +2,7 @@
 
 import { Trade } from "@/lib/types";
 import { formatDate, formatNum, formatPct, formatUsd } from "@/lib/format";
+import EventTypeBadge from "@/components/EventTypeBadge";
 
 export default function TradesTable({
   trades,
@@ -30,6 +31,7 @@ export default function TradesTable({
             <th className="text-right px-3 py-3">Cobrado</th>
             <th className="text-right px-3 py-3">PnL$</th>
             <th className="text-right px-3 py-3">PnL%</th>
+            <th className="text-left px-3 py-3">Tipo</th>
             <th className="text-left px-3 py-3">Categoría</th>
             <th className="text-left px-3 py-3">Confianza</th>
             <th className="text-left px-3 py-3">Razón</th>
@@ -102,6 +104,9 @@ export default function TradesTable({
                 }`}
               >
                 {pct === null ? "—" : formatPct(pct)}
+              </td>
+              <td className="px-3 py-2.5">
+                <EventTypeBadge eventType={t.event_type} eventSport={t.event_sport} />
               </td>
               <td className="px-3 py-2.5">{t.categoria ?? "—"}</td>
               <td className="px-3 py-2.5">{t.confianza ?? "—"}</td>
