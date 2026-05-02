@@ -223,6 +223,10 @@ export default function PositionDetailModal({
                     : formatAge(p.ts_entrada)
                 }
               />
+              <Stat
+                label="Fin mercado"
+                value={p.end_date ? formatDate(p.end_date) : "—"}
+              />
               <Stat label="Confianza" value={p.confianza ?? "—"} />
               {(p.whale_name || p.whale_addr) && (
                 <Stat
