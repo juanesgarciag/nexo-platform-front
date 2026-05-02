@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pause, Play } from "lucide-react";
 import { apiFetch } from "@/lib/api";
@@ -10,14 +11,17 @@ type BotState = {
   since?: string | null;
 };
 
+const POLL_MS = 15000;
+
 export default function BotStatusBadge() {
   const qc = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["control-state"],
     queryFn: () => apiFetch<BotState>("/api/control/state"),
-    refetchInterval: 5000,
+    refetchInterval: POLL_MS,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const pauseMut = useMutation({
@@ -44,12 +48,15 @@ export default function BotStatusBadge() {
     return (
       <div
         className="flex items-center gap-1 h-9 pl-3 pr-1 rounded-md border border-amber-500/30 bg-amber-500/5 text-xs"
-        title="Estado desconocido. Los botones igual intentan pausar/reanudar el bot."
+        title="No se pudo consultar el estado del bot. Click para ver detalle."
       >
-        <span className="h-2 w-2 rounded-full bg-amber-400" />
-        <span className="hidden sm:inline text-amber-300 font-medium">
-          Bot ?
-        </span>
+        <Link
+          href="/control"
+          className="flex items-center gap-2 text-amber-300 hover:text-amber-200"
+        >
+          <span className="h-2 w-2 rounded-full bg-amber-400" />
+          <span className="hidden sm:inline font-medium">Bot ?</span>
+        </Link>
         <button
           type="button"
           onClick={() => {
@@ -80,8 +87,8 @@ export default function BotStatusBadge() {
   const tooltip = paused
     ? `Pausado${data.reason ? ` · ${data.reason}` : ""}${
         data.since ? ` · ${new Date(data.since).toLocaleString()}` : ""
-      }`
-    : "Bot activo";
+      } · Click para detalle`
+    : "Bot activo · Click para detalle";
 
   function toggle() {
     const verb = paused ? "reanudar" : "pausar";
@@ -95,20 +102,23 @@ export default function BotStatusBadge() {
       className="flex items-center gap-2 h-9 pl-3 pr-1 rounded-md border border-white/10 bg-white/5 text-xs"
       title={tooltip}
     >
-      <span
-        className={`h-2 w-2 rounded-full ${
-          paused
-            ? "bg-amber-400"
-            : "bg-emerald-400 shadow-[0_0_8px_currentColor]"
-        }`}
-      />
-      <span
-        className={`hidden sm:inline font-medium ${
+      <Link
+        href="/control"
+        className={`flex items-center gap-2 transition-opacity hover:opacity-80 ${
           paused ? "text-amber-300" : "text-emerald-300"
         }`}
       >
-        {paused ? "Pausado" : "Activo"}
-      </span>
+        <span
+          className={`h-2 w-2 rounded-full ${
+            paused
+              ? "bg-amber-400"
+              : "bg-emerald-400 shadow-[0_0_8px_currentColor]"
+          }`}
+        />
+        <span className="hidden sm:inline font-medium">
+          {paused ? "Pausado" : "Activo"}
+        </span>
+      </Link>
       <button
         type="button"
         onClick={toggle}
