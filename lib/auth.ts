@@ -1,20 +1,24 @@
-const KEY = "nexo_authenticated";
+const TOKEN_KEY = "nexo_token";
+const FLAG_KEY = "nexo_authenticated";
 
-export function setToken(_token: string) {
+export function setToken(token: string) {
   if (typeof window === "undefined") return;
-  window.sessionStorage.setItem(KEY, "1");
+  window.localStorage.setItem(TOKEN_KEY, token);
+  window.sessionStorage.setItem(FLAG_KEY, "1");
 }
 
 export function getToken(): string | null {
-  return null;
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(TOKEN_KEY);
 }
 
 export function clearToken() {
   if (typeof window === "undefined") return;
-  window.sessionStorage.removeItem(KEY);
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.sessionStorage.removeItem(FLAG_KEY);
 }
 
 export function isAuthenticated(): boolean {
   if (typeof window === "undefined") return false;
-  return window.sessionStorage.getItem(KEY) === "1";
+  return window.localStorage.getItem(TOKEN_KEY) !== null;
 }
