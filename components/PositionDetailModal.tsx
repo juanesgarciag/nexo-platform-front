@@ -443,6 +443,37 @@ export default function PositionDetailModal({
                       </div>
                     </div>
                   )}
+                  {p.whale_hedge_nivel && (
+                    <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
+                      <div className="text-[10px] uppercase tracking-wide text-neutral-500">
+                        Nivel hedge ballena
+                      </div>
+                      <div className="text-sm font-medium mt-0.5 text-neutral-200">
+                        Nv {p.whale_hedge_nivel}
+                        {p.whale_hedge_ratio != null && (
+                          <span className="text-neutral-400 ml-2">
+                            (ratio {(Number(p.whale_hedge_ratio) * 100).toFixed(0)}%)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {p.entry_pair_result != null && (
+                    <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
+                      <div className="text-[10px] uppercase tracking-wide text-neutral-500">
+                        Resultado fijo si ambos resuelven
+                      </div>
+                      <div
+                        className={`text-sm font-medium mt-0.5 ${
+                          Number(p.entry_pair_result) >= 0
+                            ? "text-emerald-400"
+                            : "text-red-400"
+                        }`}
+                      >
+                        {formatUsd(Number(p.entry_pair_result))}
+                      </div>
+                    </div>
+                  )}
                   {hedgePriceFromRaw !== null && (
                     <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
                       <div className="text-[10px] uppercase tracking-wide text-neutral-500">

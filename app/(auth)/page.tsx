@@ -133,6 +133,16 @@ export default function DashboardPage() {
     staleTime: 0,
   });
 
+  type BotState = { paused: boolean; reason: string | null; since: string | null };
+  const botState = useQuery({
+    queryKey: ["bot-state"],
+    queryFn: () => apiFetch<BotState>("/api/control/state"),
+    refetchInterval: 30000,
+    refetchOnMount: "always",
+    staleTime: 0,
+    retry: false,  // si bot no responde, no retries spammeando
+  });
+
   const s = summary.data;
   const w = wallet.data;
   const realizedPnl = s?.realized_pnl != null ? Number(s.realized_pnl) : 0;
@@ -150,7 +160,36 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        {botState.isError ? (
+          <span className="text-xs px-2 py-1 rounded-md border border-neutral-700 bg-neutral-900 text-neutral-500">
+            ⚪ Bot no alcanzable
+          </span>
+        ) : botState.data ? (
+          botState.data.paused ? (
+            <span
+              className="text-xs px-2 py-1 rounded-md border border-red-500/40 bg-red-500/10 text-red-300"
+              title={
+                botState.data.reason
+                  ? `Razón: ${botState.data.reason}${
+                      botState.data.since
+                        ? ` · desde ${new Date(botState.data.since).toLocaleString()}`
+                        : ""
+                    }`
+                  : ""
+              }
+            >
+              🔴 Bot pausado
+              {botState.data.reason ? `: ${botState.data.reason.slice(0, 30)}` : ""}
+            </span>
+          ) : (
+            <span className="text-xs px-2 py-1 rounded-md border border-emerald-500/40 bg-emerald-500/10 text-emerald-300">
+              🟢 Bot activo
+            </span>
+          )
+        ) : null}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2 bg-gradient-to-br from-emerald-950/40 to-neutral-900 border border-emerald-900/60 rounded-xl p-5">

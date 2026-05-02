@@ -47,6 +47,9 @@ export type Position = {
   event_category?: string | null;
   event_slug?: string | null;
   football_sibling_team?: string | null;
+  whale_hedge_nivel?: string | null;
+  whale_hedge_ratio?: number | string | null;
+  entry_pair_result?: number | string | null;
   precio_pico?: number | string | null;
 };
 

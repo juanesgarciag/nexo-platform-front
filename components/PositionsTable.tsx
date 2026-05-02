@@ -196,6 +196,30 @@ export default function PositionsTable({
                         : "hedge"}
                     </span>
                   )}
+                  {p.whale_hedge_nivel && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                        p.whale_hedge_nivel === "A"
+                          ? "bg-red-500/10 text-red-300 border-red-500/20"
+                          : p.whale_hedge_nivel === "B"
+                          ? "bg-amber-500/10 text-amber-300 border-amber-500/20"
+                          : "bg-emerald-500/10 text-emerald-300 border-emerald-500/20"
+                      }`}
+                      title={`Nivel hedge ${p.whale_hedge_nivel}: ratio ballena ${
+                        p.whale_hedge_ratio != null
+                          ? `${(Number(p.whale_hedge_ratio) * 100).toFixed(0)}%`
+                          : "?"
+                      }${
+                        p.whale_hedge_nivel === "A"
+                          ? " — ballena casi sin hedge, cobertura 30%"
+                          : p.whale_hedge_nivel === "B"
+                          ? " — ballena con algo de hedge, cobertura 50%"
+                          : " — ballena bien cubierta, cobertura 60%"
+                      }`}
+                    >
+                      Nv {p.whale_hedge_nivel}
+                    </span>
+                  )}
                   {p.portfolio_mode === "live_binary" && (
                     <span
                       className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
