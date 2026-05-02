@@ -60,21 +60,21 @@ export default function PositionsTable({
 
   return (
     <div className="glass-panel overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 rounded-none sm:rounded-xl">
-      <table className="w-full text-sm">
-        <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium border-b border-white/5">
+      <table className="w-full text-sm border-separate border-spacing-0">
+        <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
           <tr>
-            <th className="text-left px-3 py-3">Pregunta</th>
-            <th className="text-left px-3 py-3">Outcome</th>
-            <th className="text-right px-3 py-3">Entrada</th>
-            <th className="text-right px-3 py-3">Actual</th>
-            <th className="text-right px-3 py-3">Invertido</th>
-            <th className="text-right px-3 py-3">PnL$</th>
-            <th className="text-right px-3 py-3">PnL%</th>
-            <th className="text-right px-3 py-3">Abierta</th>
-            <th className="text-right px-3 py-3">Cierre</th>
-            <th className="text-left px-3 py-3">Score</th>
-            <th className="text-left px-3 py-3">Origen</th>
-            {showClose && <th className="px-3 py-3"></th>}
+            <th className="sm:sticky sm:left-0 sm:z-20 sm:bg-neutral-950 text-left px-3 py-3 border-b border-white/5 min-w-[280px] max-w-md">Pregunta</th>
+            <th className="text-left px-3 py-3 border-b border-white/5">Outcome</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">Entrada</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">Actual</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">Invertido</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">PnL$</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">PnL%</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">Abierta</th>
+            <th className="text-right px-3 py-3 border-b border-white/5">Cierre</th>
+            <th className="text-left px-3 py-3 border-b border-white/5">Score</th>
+            <th className="text-left px-3 py-3 border-b border-white/5">Origen</th>
+            {showClose && <th className="px-3 py-3 border-b border-white/5"></th>}
           </tr>
         </thead>
         <tbody>
@@ -92,16 +92,19 @@ export default function PositionsTable({
             <tr
               key={p.id}
               onClick={() => onSelect?.(p.id)}
-              className="border-t border-white/5 hover:bg-white/[0.02] cursor-pointer transition-colors"
+              className="hover:bg-white/[0.02] cursor-pointer transition-colors group"
             >
-              <td className="px-3 py-2.5 max-w-md truncate" title={p.pregunta}>
+              <td
+                className="sm:sticky sm:left-0 sm:z-10 sm:bg-neutral-950 sm:group-hover:bg-[rgb(15,15,15)] px-3 py-2.5 min-w-[280px] max-w-md truncate border-t border-white/5"
+                title={p.pregunta}
+              >
                 {p.pregunta}
               </td>
-              <td className="px-3 py-2.5">{p.outcome}</td>
-              <td className="px-3 py-2.5 text-right tabular-nums">
+              <td className="px-3 py-2.5 border-t border-white/5">{p.outcome}</td>
+              <td className="px-3 py-2.5 text-right tabular-nums border-t border-white/5">
                 {formatNum(p.precio_entrada, 3)}
               </td>
-              <td className="px-3 py-2.5 text-right tabular-nums">
+              <td className="px-3 py-2.5 text-right tabular-nums border-t border-white/5">
                 {curPrice > 0 ? formatNum(curPrice, 3) : "—"}
                 {(() => {
                   const pico = Number(p.precio_pico ?? 0);
@@ -116,11 +119,11 @@ export default function PositionsTable({
                   ) : null;
                 })()}
               </td>
-              <td className="px-3 py-2.5 text-right tabular-nums">
+              <td className="px-3 py-2.5 text-right tabular-nums border-t border-white/5">
                 {formatUsd(p.cantidad)}
               </td>
               <td
-                className={`px-3 py-2.5 text-right tabular-nums ${
+                className={`px-3 py-2.5 text-right tabular-nums border-t border-white/5 ${
                   livePnlUsd === null
                     ? ""
                     : livePnlUsd >= 0
@@ -131,7 +134,7 @@ export default function PositionsTable({
                 {livePnlUsd !== null ? formatUsd(livePnlUsd) : "—"}
               </td>
               <td
-                className={`px-3 py-2.5 text-right tabular-nums ${
+                className={`px-3 py-2.5 text-right tabular-nums border-t border-white/5 ${
                   livePnlPct === null
                     ? ""
                     : livePnlPct >= 0
@@ -141,13 +144,13 @@ export default function PositionsTable({
               >
                 {livePnlPct !== null ? formatPct(livePnlPct) : "—"}
               </td>
-              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums">
+              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums border-t border-white/5">
                 {formatAge(p.ts_entrada)}
               </td>
-              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums">
+              <td className="px-3 py-2.5 text-right text-neutral-400 whitespace-nowrap text-xs tabular-nums border-t border-white/5">
                 {endDate ? endDate.toString().slice(0, 10) : "—"}
               </td>
-              <td className="px-3 py-2.5">
+              <td className="px-3 py-2.5 border-t border-white/5">
                 {p.score != null ? (
                   (() => {
                     const meta = getScoreMeta(p.score);
@@ -171,7 +174,7 @@ export default function PositionsTable({
                   <span className="text-neutral-600">—</span>
                 )}
               </td>
-              <td className="px-3 py-2.5">
+              <td className="px-3 py-2.5 border-t border-white/5">
                 <span className="inline-flex items-center gap-1 flex-wrap">
                   {p.origen === "copy" ? (
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">copy</span>
@@ -221,7 +224,7 @@ export default function PositionsTable({
                 </span>
               </td>
               {showClose && (
-                <td className="px-3 py-2.5 text-right">
+                <td className="px-3 py-2.5 text-right border-t border-white/5">
                   {p.status === "open" && (
                     <button
                       disabled={closingId === String(p.id)}
