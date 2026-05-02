@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChevronRight, Menu } from "lucide-react";
 import NavSidebar from "@/components/NavSidebar";
 import WalletConnect from "@/components/WalletConnect";
+import BotStatusBadge from "@/components/BotStatusBadge";
 import { SidebarProvider, useSidebar } from "@/components/SidebarContext";
 import { apiFetch } from "@/lib/api";
 
@@ -60,7 +61,10 @@ function AuthShell({ children }: { children: ReactNode }) {
               </span>
             </div>
           </div>
-          <WalletConnect />
+          <div className="flex items-center gap-2">
+            <BotStatusBadge />
+            <WalletConnect />
+          </div>
         </header>
         <div className="flex-1 px-4 py-6 sm:px-6 sm:py-8 overflow-auto scrollbar-thin">
           <div className="max-w-screen-2xl mx-auto">{children}</div>
