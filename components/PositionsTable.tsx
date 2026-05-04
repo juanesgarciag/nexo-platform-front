@@ -237,17 +237,24 @@ export default function PositionsTable({
                   ) : (
                     <span className="text-neutral-600">—</span>
                   )}
-                  {p.hedge_opened && (
-                    <span
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                      title={`hedge${p.hedge_reason ? ` (${p.hedge_reason})` : ""}${p.hedge_count ? ` x${p.hedge_count}` : ""}${p.football_sibling_team ? ` ↔ ${p.football_sibling_team}` : ""}`}
-                    >
-                      {p.hedge_reason === "football_sibling" ? "⚽" : "🔀"}{" "}
-                      {p.football_sibling_team
-                        ? `vs ${p.football_sibling_team.slice(0, 14)}`
-                        : "hedge"}
-                    </span>
-                  )}
+                  {p.hedge_opened && (() => {
+                    const isFulbito = p.hedge_reason?.startsWith("football_sibling") ?? false;
+                    const kind = p.football_sibling_kind || p.hedge_kind || "";
+                    const icon = isFulbito ? (kind === "empate" ? "🤝" : "⚽") : "🔀";
+                    const label = isFulbito && kind === "empate"
+                      ? "vs empate"
+                      : p.football_sibling_team
+                      ? `vs ${p.football_sibling_team.slice(0, 14)}`
+                      : "hedge";
+                    return (
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                        title={`hedge${p.hedge_reason ? ` (${p.hedge_reason})` : ""}${p.hedge_count ? ` x${p.hedge_count}` : ""}${p.football_sibling_team ? ` ↔ ${p.football_sibling_team}` : ""}${kind ? ` · tipo ${kind}` : ""}`}
+                      >
+                        {icon} {label}
+                      </span>
+                    );
+                  })()}
                   {p.whale_hedge_nivel && (
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded border ${

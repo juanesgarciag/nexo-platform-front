@@ -42,11 +42,15 @@ export type Position = {
   hedge_for?: string | null;
   hedge_key?: string | null;
   hedge_reason?: string | null;
+  hedge_kind?: string | null;                  // "hermano" | "empate"
   hedge_count?: number | null;
   portfolio_mode?: string | null;
   event_category?: string | null;
   event_slug?: string | null;
+  event_structure_signals?: string | null;     // CSV: "draw,btts,slug"
+  event_structure_confidence?: number | string | null;
   football_sibling_team?: string | null;
+  football_sibling_kind?: string | null;       // "hermano" | "empate" (en la posición primaria)
   whale_hedge_nivel?: string | null;
   whale_hedge_ratio?: number | string | null;
   entry_pair_result?: number | string | null;

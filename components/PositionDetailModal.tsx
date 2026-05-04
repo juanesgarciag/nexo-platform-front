@@ -422,14 +422,31 @@ export default function PositionDetailModal({
                         : "—"}
                     </div>
                   </div>
-                  {p.hedge_reason && (
+                  {p.hedge_reason && (() => {
+                    const isFulbito = p.hedge_reason.startsWith("football_sibling");
+                    const kind = p.football_sibling_kind || p.hedge_kind || "";
+                    const icon = isFulbito ? (kind === "empate" ? "🤝 " : "⚽ ") : "";
+                    return (
+                      <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
+                        <div className="text-[10px] uppercase tracking-wide text-neutral-500">
+                          Motivo hedge
+                        </div>
+                        <div className="text-sm font-medium mt-0.5 text-neutral-200">
+                          {icon}
+                          {p.hedge_reason}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                  {(p.football_sibling_kind || p.hedge_kind) && (
                     <div className="rounded border border-indigo-800/40 bg-neutral-900/40 p-2">
                       <div className="text-[10px] uppercase tracking-wide text-neutral-500">
-                        Motivo hedge
+                        Tipo de seguro
                       </div>
                       <div className="text-sm font-medium mt-0.5 text-neutral-200">
-                        {p.hedge_reason === "football_sibling" ? "⚽ " : ""}
-                        {p.hedge_reason}
+                        {(p.football_sibling_kind || p.hedge_kind) === "empate"
+                          ? "🤝 Empate (Draw YES)"
+                          : "⚽ Hermano (rival YES)"}
                       </div>
                     </div>
                   )}
