@@ -17,6 +17,8 @@ export default function TradesPage() {
   const [hasPnl, setHasPnl] = useState<"" | "yes" | "no">("");
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
+  const [sortBy, setSortBy] = useState<"ts" | "outcome" | "pnl_pct">("ts");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const limit = 50;
@@ -41,10 +43,12 @@ export default function TradesPage() {
     if (confianza) p.set("confianza", confianza);
     if (hasPnl) p.set("has_pnl", hasPnl);
     if (searchDebounced) p.set("pregunta", searchDebounced);
+    p.set("sort_by", sortBy);
+    p.set("sort_dir", sortDir);
     p.set("limit", String(limit));
     p.set("offset", String(page * limit));
     return p.toString();
-  }, [from, to, categoria, resultado, confianza, hasPnl, searchDebounced, page]);
+  }, [from, to, categoria, resultado, confianza, hasPnl, searchDebounced, sortBy, sortDir, page]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["trades", params],
@@ -205,7 +209,17 @@ export default function TradesPage() {
       {isLoading ? (
         <div className="text-sm text-neutral-500">Loading…</div>
       ) : (
-        <TradesTable trades={data?.data ?? []} onSelect={setSelectedTrade} />
+        <TradesTable
+          trades={data?.data ?? []}
+          onSelect={setSelectedTrade}
+          sortBy={sortBy}
+          sortDir={sortDir}
+          onSortChange={(by, dir) => {
+            setSortBy(by);
+            setSortDir(dir);
+            setPage(0);
+          }}
+        />
       )}
 
       <Pagination

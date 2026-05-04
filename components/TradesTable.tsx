@@ -4,13 +4,35 @@ import { Trade } from "@/lib/types";
 import { formatDate, formatNum, formatPct, formatUsd } from "@/lib/format";
 import EventTypeBadge from "@/components/EventTypeBadge";
 
+type TradeSortBy = "ts" | "outcome" | "pnl_pct";
+type TradeSortDir = "asc" | "desc";
+
 export default function TradesTable({
   trades,
   onSelect,
+  sortBy,
+  sortDir,
+  onSortChange,
 }: {
   trades: Trade[];
   onSelect?: (trade: Trade) => void;
+  sortBy?: TradeSortBy;
+  sortDir?: TradeSortDir;
+  onSortChange?: (by: TradeSortBy, dir: TradeSortDir) => void;
 }) {
+  const onHeaderClick = (col: TradeSortBy) => () => {
+    if (!onSortChange) return;
+    if (sortBy === col) {
+      onSortChange(col, sortDir === "asc" ? "desc" : "asc");
+    } else {
+      onSortChange(col, col === "outcome" ? "asc" : "desc");
+    }
+  };
+  const arrow = (col: TradeSortBy) =>
+    sortBy === col ? (sortDir === "asc" ? " ▲" : " ▼") : "";
+  const sortableCls = onSortChange
+    ? "cursor-pointer select-none hover:text-neutral-300"
+    : "";
   if (!trades.length) {
     return (
       <div className="glass-panel text-sm text-neutral-500 py-10 text-center">
@@ -23,14 +45,29 @@ export default function TradesTable({
       <table className="w-full text-sm">
         <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium border-b border-white/5">
           <tr>
-            <th className="text-left px-3 py-3">Fecha</th>
+            <th
+              className={`text-left px-3 py-3 ${sortableCls}`}
+              onClick={onHeaderClick("ts")}
+            >
+              Fecha{arrow("ts")}
+            </th>
             <th className="text-left px-3 py-3">Tipo</th>
-            <th className="text-left px-3 py-3">Outcome</th>
+            <th
+              className={`text-left px-3 py-3 ${sortableCls}`}
+              onClick={onHeaderClick("outcome")}
+            >
+              Outcome{arrow("outcome")}
+            </th>
             <th className="text-right px-3 py-3">Precio</th>
             <th className="text-right px-3 py-3">Invertido</th>
             <th className="text-right px-3 py-3">Cobrado</th>
             <th className="text-right px-3 py-3">PnL$</th>
-            <th className="text-right px-3 py-3">PnL%</th>
+            <th
+              className={`text-right px-3 py-3 ${sortableCls}`}
+              onClick={onHeaderClick("pnl_pct")}
+            >
+              PnL%{arrow("pnl_pct")}
+            </th>
             <th className="text-left px-3 py-3">Tipo</th>
             <th className="text-left px-3 py-3">Categoría</th>
             <th className="text-left px-3 py-3">Confianza</th>

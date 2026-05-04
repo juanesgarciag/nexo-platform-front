@@ -41,6 +41,8 @@ export default function PositionsPage() {
   const [modo, setModo] = useState<"" | "live_binary" | "hedge">("");
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
+  const [sortBy, setSortBy] = useState<"ts_entrada" | "pregunta" | "outcome" | "pnl_usdc" | "end_date">("ts_entrada");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
   const [selectedPositionId, setSelectedPositionId] = useState<number | null>(null);
   const limit = 50;
@@ -67,10 +69,12 @@ export default function PositionsPage() {
     } else if (modo === "hedge") {
       p.set("hedge_opened", "true");
     }
+    p.set("sort_by", sortBy);
+    p.set("sort_dir", sortDir);
     p.set("limit", String(limit));
     p.set("offset", String(page * limit));
     return p.toString();
-  }, [tab, categoria, confianza, hasPnl, modo, searchDebounced, page]);
+  }, [tab, categoria, confianza, hasPnl, modo, searchDebounced, sortBy, sortDir, page]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["positions", params],
@@ -214,7 +218,18 @@ export default function PositionsPage() {
           {isLoading ? (
             <div className="text-sm text-neutral-500">Loading…</div>
           ) : (
-            <PositionsTable positions={data?.data ?? []} onSelect={setSelectedPositionId} livePrices={liveQ.data ?? {}} />
+            <PositionsTable
+              positions={data?.data ?? []}
+              onSelect={setSelectedPositionId}
+              livePrices={liveQ.data ?? {}}
+              sortBy={sortBy}
+              sortDir={sortDir}
+              onSortChange={(by, dir) => {
+                setSortBy(by);
+                setSortDir(dir);
+                setPage(0);
+              }}
+            />
           )}
 
           <Pagination

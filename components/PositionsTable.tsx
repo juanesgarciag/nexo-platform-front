@@ -19,17 +19,39 @@ type LivePriceMap = Record<
   }
 >;
 
+type SortBy = "ts_entrada" | "pregunta" | "outcome" | "pnl_usdc" | "end_date";
+type SortDir = "asc" | "desc";
+
 export default function PositionsTable({
   positions,
   showClose = true,
   onSelect,
   livePrices = {},
+  sortBy,
+  sortDir,
+  onSortChange,
 }: {
   positions: Position[];
   showClose?: boolean;
   onSelect?: (positionId: number) => void;
   livePrices?: LivePriceMap;
+  sortBy?: SortBy;
+  sortDir?: SortDir;
+  onSortChange?: (by: SortBy, dir: SortDir) => void;
 }) {
+  const onHeaderClick = (col: SortBy) => () => {
+    if (!onSortChange) return;
+    if (sortBy === col) {
+      onSortChange(col, sortDir === "asc" ? "desc" : "asc");
+    } else {
+      onSortChange(col, col === "pregunta" || col === "outcome" ? "asc" : "desc");
+    }
+  };
+  const arrow = (col: SortBy) =>
+    sortBy === col ? (sortDir === "asc" ? " ▲" : " ▼") : "";
+  const sortableCls = onSortChange
+    ? "cursor-pointer select-none hover:text-neutral-300"
+    : "";
   const qc = useQueryClient();
   const [closingId, setClosingId] = useState<string | null>(null);
 
@@ -64,15 +86,40 @@ export default function PositionsTable({
       <table className="w-full text-sm border-separate border-spacing-0">
         <thead className="text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
           <tr>
-            <th className="sm:sticky sm:left-0 sm:z-20 sm:bg-neutral-950 text-left px-3 py-3 border-b border-white/5 min-w-[280px] max-w-md">Pregunta</th>
-            <th className="text-left px-3 py-3 border-b border-white/5">Outcome</th>
+            <th
+              className={`sm:sticky sm:left-0 sm:z-20 sm:bg-neutral-950 text-left px-3 py-3 border-b border-white/5 min-w-[280px] max-w-md ${sortableCls}`}
+              onClick={onHeaderClick("pregunta")}
+            >
+              Pregunta{arrow("pregunta")}
+            </th>
+            <th
+              className={`text-left px-3 py-3 border-b border-white/5 ${sortableCls}`}
+              onClick={onHeaderClick("outcome")}
+            >
+              Outcome{arrow("outcome")}
+            </th>
             <th className="text-right px-3 py-3 border-b border-white/5">Entrada</th>
             <th className="text-right px-3 py-3 border-b border-white/5">Actual</th>
             <th className="text-right px-3 py-3 border-b border-white/5">Invertido</th>
-            <th className="text-right px-3 py-3 border-b border-white/5">PnL$</th>
+            <th
+              className={`text-right px-3 py-3 border-b border-white/5 ${sortableCls}`}
+              onClick={onHeaderClick("pnl_usdc")}
+            >
+              PnL${arrow("pnl_usdc")}
+            </th>
             <th className="text-right px-3 py-3 border-b border-white/5">PnL%</th>
-            <th className="text-right px-3 py-3 border-b border-white/5">Abierta</th>
-            <th className="text-right px-3 py-3 border-b border-white/5">Cierre</th>
+            <th
+              className={`text-right px-3 py-3 border-b border-white/5 ${sortableCls}`}
+              onClick={onHeaderClick("ts_entrada")}
+            >
+              Abierta{arrow("ts_entrada")}
+            </th>
+            <th
+              className={`text-right px-3 py-3 border-b border-white/5 ${sortableCls}`}
+              onClick={onHeaderClick("end_date")}
+            >
+              Cierre{arrow("end_date")}
+            </th>
             <th className="text-left px-3 py-3 border-b border-white/5">Tipo</th>
             <th className="text-left px-3 py-3 border-b border-white/5">Score</th>
             <th className="text-left px-3 py-3 border-b border-white/5">Origen</th>
